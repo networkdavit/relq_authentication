@@ -1,12 +1,12 @@
 # relq_authentication
 
 How to test
-
-# git clone https://github.com/networkdavit/relq_authentication.git
-# cd relq_relq_authentication
-# npm install
-# nodemon main.js
-
+```
+git clone https://github.com/networkdavit/relq_authentication.git
+cd relq_authentication
+npm install
+nodemon main.js
+```
 
 --------------------------
 
@@ -17,22 +17,25 @@ response- Unauthorized
 
 Make a post request to register
 http://localhost:3000/register
-
+```
 body
 {
     "username": "test", 
     "password": "test123"
 }
+```
 
 response - User created
 
 Make a post request to login
 http://localhost:3000/login
 
+```
 {
     "username": "test", 
     "password": "test123"
 }
+```
 
 repsponse - jwt_token: "somerandomtokenhere"
 
