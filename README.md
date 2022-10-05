@@ -2,10 +2,10 @@
 
 How to test
 
-git clone https://github.com/networkdavit/relq_authentication.git
-cd relq_relq_authentication
-npm install
-nodemon main.js
+#git clone https://github.com/networkdavit/relq_authentication.git
+#cd relq_relq_authentication
+#npm install
+#nodemon main.js
 
 
 --------------------------
