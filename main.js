@@ -6,6 +6,7 @@ const bcrypt = require("bcrypt");
 const jsonparser = bodyparser.json()
 const app = express()
 const port = 3000
+const dotenv = require('dotenv').config()
 
 app.use(jsonparser)
 
@@ -14,12 +15,19 @@ db.run("CREATE TABLE IF NOT EXISTS users(username TEXT, password TEXT)")
 
 //------------------------------------------------------------
 app.get('/', authenticateToken, (req, res) => {
-  res.send('Hello World!')
+  const isAdmin = check_for_admin(req,res)
+  console.log(isAdmin == 'admin')
+  if(isAdmin == 'admin'){
+    res.send('Hello World!')
+
+  }else{
+    res.send(res.status(401).json({message:'not admin'}))
+  }
 })
 
 //----------------------------------------------------------
 
-const SECRET = "somerandomsecret"
+const SECRET = process.env.SECRET
 function generateAccessToken(username) {
     return jwt.sign(username, SECRET, { expiresIn: '36000s' });
 }
@@ -42,16 +50,27 @@ function authenticateToken(req, res, next) {
   }
 //-----------------------------------------------------------
 
+function check_for_admin(req, res, next){
+  const authHeader = req.headers['authorization']
+  const token = authHeader && authHeader.split(' ')[1]
+  const decodedClaims = jwt.verify(token, SECRET);
+  console.log(decodedClaims.username)
+  return decodedClaims.username
+
+  // const extracted = atob(token.split('.')[1])
+
+  // console.log(extracted)
+
+}
+
+
 app.post('/register', async (req, res) => {
   const content = req.body 
   const username = content["username"]
   const password = content["password"]
   const salt = await bcrypt.genSalt(10)
+  console.log(salt)
   const hashed_password = await bcrypt.hash(password, salt)
-  const new_user = {
-    username: username,
-    password: hashed_password
-  }
   let sql = "INSERT INTO users (username, password) VALUES (?, ?)"
   db.run(sql, username,hashed_password, function(err){
         if(err){
@@ -88,3 +107,8 @@ app.listen(port, () => {
   console.log(`Example app listening on port ${port}`)
 })
 
+
+for(let i =0; i < 10; i++){
+  let sql = "INSERT INTO users (username, password) VALUES (?, ?)"
+  db.run(sql, `username${1}`, `password${1}`)
+}
