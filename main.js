@@ -6,7 +6,7 @@ const bcrypt = require("bcrypt");
 const jsonparser = bodyparser.json()
 const app = express()
 const port = 3000
-const dotenv = require('dotenv').config()
+require('dotenv').config()
 
 app.use(jsonparser)
 
@@ -15,9 +15,9 @@ db.run("CREATE TABLE IF NOT EXISTS users(username TEXT, password TEXT)")
 
 //------------------------------------------------------------
 app.get('/', authenticateToken, (req, res) => {
-  const isAdmin = check_for_admin(req,res)
-  console.log(isAdmin == 'admin')
-  if(isAdmin == 'admin'){
+  const username = check_for_admin(req,res)
+  console.log(username)
+  if(username == process.env.ADMIN){
     res.send('Hello World!')
 
   }else{
@@ -54,13 +54,7 @@ function check_for_admin(req, res, next){
   const authHeader = req.headers['authorization']
   const token = authHeader && authHeader.split(' ')[1]
   const decodedClaims = jwt.verify(token, SECRET);
-  console.log(decodedClaims.username)
   return decodedClaims.username
-
-  // const extracted = atob(token.split('.')[1])
-
-  // console.log(extracted)
-
 }
 
 
